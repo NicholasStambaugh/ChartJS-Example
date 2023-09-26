@@ -8,7 +8,7 @@
     <script src="data.js"></script>
 </head>
 <body>
-    <h1>Supplier Portal</h1>
+    <h1>Pro Connect</h1>
     <div class="container">
         <table id="purchasing-history">
             <thead>
@@ -35,7 +35,16 @@
                 </script>
             </tbody>
         </table>
-        <canvas id="chart"></canvas>
+        <canvas id="chart"></canvas>    
+        <h3 class="filters">I want to view...
+            <div class="button-click">
+                <button onclick="showChart('Quantity')">Quantity</button>
+                <button onclick="showChart('Price')">Price</button>
+                <button onclick="showChart('Profit')">Profit</button>
+                <button onclick="location.reload()">The original chart</button>
+            </div>
+            </h3><br><br><br>
+        <canvas id="pie-chart"></canvas>
         <script>
             const chartData = {
                 labels: data.map(item => item.product),
@@ -72,6 +81,43 @@
                     }
                 }
             });
+            const pieChartData = {
+                labels: data.map(item => item.product),
+                datasets: [{
+                    label: 'Quantity',
+                    data: data.map(item => item.quantity),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Price',
+                    data: data.map(item => item.price),
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    hidden: true
+                }, {
+                    label: 'Profit',
+                    data: data.map(item => item.price * item.quantity),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    hidden: true
+                }]
+            };
+            const pieChartCanvas = document.querySelector('#pie-chart');
+            const pieChart = new Chart(pieChartCanvas, {
+                type: 'pie',
+                data: pieChartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
             function showChart(dataType) {
                 chart.data.datasets.forEach(dataset => {
                     if (dataset.label === dataType) {
@@ -81,16 +127,26 @@
                     }
                 });
                 chart.update();
+                pieChart.data.datasets.forEach(dataset => {
+                    if (dataset.label === dataType) {
+                        dataset.hidden = false;
+                    } else {
+                        dataset.hidden = true;
+                    }
+                });
+                pieChart.update();
+            }
+            function showPriceAndProfit() {
+                chart.data.datasets.forEach(dataset => {
+                    if (dataset.label === 'Price') {
+                        dataset.hidden = false;
+                    } else if (dataset.label === 'Profit') {
+                        dataset.hidden = false;
+                    }
+                });
+                chart.update();
             }
         </script>
     </div>
-    <h3 class="filters">I want to view...
-    <div class="button-click">
-        <button onclick="showChart('Quantity')">Quantity</button>
-        <button onclick="showChart('Price')">Price</button>
-        <button onclick="showChart('Profit')">Profit</button>
-        <button onclick="location.reload()">The original chart</button>
-    </div>
-</h3>
 </body>
 </html>
