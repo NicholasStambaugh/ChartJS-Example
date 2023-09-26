@@ -11,7 +11,7 @@ To run this application, follow these steps:
 
 OR
 
-View the link here.
+View the link [here.](https://nicholasstambaugh.github.io/ChartJS-Example/)
 
 ## Dependencies
 
